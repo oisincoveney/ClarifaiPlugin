@@ -20,7 +20,7 @@ public class ClarifaiTagger
 
     // TODO : Convert to something that Nuxeo Platform can use
     @SuppressWarnings ( "FieldCanBeLocal" )
-    private String APP_KEY_PATH = "/Users/oisincoveney/Documents/Github/ClarifaiPlugin/src/main/resources/keys.txt";
+    private String APP_KEY_PATH = "/** PATH TO keys.txt GOES HERE";
 
     //API authorization keys
     private String API_KEY;       // -> App ID with OAuth2
