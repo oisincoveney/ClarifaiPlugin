@@ -71,17 +71,18 @@ public class ClarifaiTagger
             e.printStackTrace();
         }
 
+
         // Checks whether the user's authentication implements OAuth2 or the API Keys
-        if ( API_SECRET != null )
-        {
-            client = new ClarifaiBuilder(API_KEY, API_SECRET).buildSync().getDefaultModels().generalModel().predict();
-        }
-        else
+        if ( API_SECRET == null )
         {
             // TODO : Change to appropriate lines when Java API Keys are released for Clarifai
 
             // client = new ClarifaiBuilder(API_KEY).buildSync().getDefaultModels().generalModel().predict();
             throw new IllegalArgumentException();
+        }
+        else
+        {
+            client = new ClarifaiBuilder(API_KEY, API_SECRET).buildSync().getDefaultModels().generalModel().predict();
         }
 
     }
@@ -91,7 +92,7 @@ public class ClarifaiTagger
      *
      * Calls initAppKeys() and initializes two empty LinkedHashMaps
      */
-    public ClarifaiTagger ()
+    ClarifaiTagger ()
     {
         //Initializes the app keys for accessing the Clarifai API
         initAppKeys();
@@ -107,7 +108,7 @@ public class ClarifaiTagger
      *
      * Calls the default constructor, then adds the list of String objects to the imagePaths map
      */
-    public ClarifaiTagger ( String... imagePaths )
+    ClarifaiTagger ( String... imagePaths )
     {
         this();
         add(imagePaths);
@@ -124,7 +125,7 @@ public class ClarifaiTagger
      * @return a boolean describing the final status of the operation -> true if the String given was recognized as a
      * URL or image path, false if not.
      */
-    public boolean add ( String... image )
+    void add ( String... image )
     {
         boolean allImagesSuccessful = true;
 
@@ -138,7 +139,6 @@ public class ClarifaiTagger
                 allImagesSuccessful = false;
         }
 
-        return allImagesSuccessful;
     }
 
     /**
@@ -163,7 +163,7 @@ public class ClarifaiTagger
         imagePaths.put(path, false);
     }
 
-    public void calculate ()
+    void calculate ()
     {
 
         //The collection that will be sent to Clarifai
@@ -227,6 +227,18 @@ public class ClarifaiTagger
     }
 
     /**
+     * Returns the tags for a specific image path. Based on the behavior of the LinkedHashMap's get() method
+     *
+     * @param imagePath -> the full path or URL of the image
+     * @return a HashSet of strings containing the tags for the specific image
+     */
+    public HashSet<String> getTags(String imagePath)
+    {
+        return results.get(imagePath);
+    }
+
+
+    /**
      * toString() -> returns a string representation of the results array
      */
     public String toString ()
@@ -234,7 +246,7 @@ public class ClarifaiTagger
         StringBuilder s = new StringBuilder();
         results.forEach(( str, set ) ->
                         {
-                            s.append(imagePaths.get(str) ? "URL  " : "Local");
+                            s.append((imagePaths.get(str) ? "URL  " : "Local") + "     |   ");
                             s.append("\t" + str);
                             s.append("\n" + set + "\n");
                         });
